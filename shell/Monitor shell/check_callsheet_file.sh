@@ -4,6 +4,7 @@
 #如果是record主节点base_dir="/data/ucp/archive/archive_bak"
 #如果是中心话单备节点base_dir="/data/ucp/archive/archive"
 #如果是中心话单主节点base_dir="/data/ucp/archive/archive_bak"
+#最后告警输出内容按照不通省份自行修改
 
 # 设置基础目录路径
 base_dir="/data/ucp/archive/archive"
