@@ -1,4 +1,8 @@
 #!/bin/bash
+#该脚本用户查询统一调度的日志agentService.log
+#实时日志查询格式bash query_agentServcielog.sh 号码
+#归档日志查询格式bash query_agentServcielog.sh 号码 2024-01-04
+
 
 # 获取变量1（sbc）、变量2（号码）、变量3（时间）
 province="$1"
