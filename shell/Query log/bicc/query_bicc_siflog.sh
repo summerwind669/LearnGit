@@ -15,6 +15,11 @@ if [ -z "$timestamp" ]; then
     ansible -i ~/hosts/hosts_all signal -m shell -a "zgrep -h '$number' /data/ucp/signal/scu*/log/sif*_sys.log"
 else
     # 如果提供了时间参数，则执行归档日志查询
+    # 检查变量3是否合法（使用正则表达式匹配日期格式）
+    if ! [[ $timestamp =~ ^[0-9]{4}[0-9]{2}[0-9]{2}$ ]]; then
+        echo "Error: Invalid date format. Use 'yyyymmdd'."
+        exit 1
+    fi
     ansible -i ~/hosts/hosts_all signal -m shell -a "zgrep -h '$number' /data/ucp/signal/scu*/log/sif*_sys_$timestamp*"
 fi
 
