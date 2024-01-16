@@ -12,7 +12,7 @@ timestamp="$2"
 # 使用ansible查询日志
 if [ -z "$timestamp" ]; then
     # 如果没有提供时间参数，则执行实时日志查询
-    ansible -i ~/hosts/hosts_wh ocs_ly -m shell -a "zgrep -h '$number' /home/ucp/outCallService/tomcat*/logs/outCallService*.log"
+    ansible -i ~/hosts/hosts_wh ocs_ha -m shell -a "zgrep -h '$number' /home/ucp/outCallService/tomcat*/logs/outCallService*.log"
 else
     # 如果提供了时间参数，则执行归档日志查询
     # 检查变量3是否合法（使用正则表达式匹配日期格式）
@@ -20,6 +20,6 @@ else
         echo "Error: Invalid date format. Use 'yyyy-mm-dd-hh'."
         exit 1
     fi
-    ansible -i ~/hosts/hosts_wh ocs_ly -m shell -a "zgrep -h '$number' /home/ucp/outCallService/tomcat*/logs/outCallService*$timestamp*"
+    ansible -i ~/hosts/hosts_wh ocs_ha -m shell -a "zgrep -h '$number' /home/ucp/outCallService/tomcat*/logs/outCallService*$timestamp*"
 fi
 
