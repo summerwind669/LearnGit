@@ -6,4 +6,4 @@
 #rq_ivr是查询容器环境的ivr的fsm和VPS日志
 #sbc是查询5gisbc，isbc，asbc，sip-proxy的日志
 #vitual_machine_ivr查询虚拟机ivr日志
-
+#wh_ivr查询外呼ivr日志
