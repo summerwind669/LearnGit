@@ -3,7 +3,7 @@
 #该脚本用户查询虚拟机11ivr的日志，目前第二机房的11ivr日志还是freeswitch.log
 #实时日志查询格式bash vm_query_11ivr_fsmlog.sh 号码
 #归档日志查询格式bash vm_query_11ivr_fsmlog.sh 号码 2024-01-04
-
+#归档日志时间格式yyyy-mm-dd
 
 # 获取变量1（号码）和变量2（时间）
 number="$1"

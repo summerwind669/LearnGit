@@ -3,7 +3,7 @@
 #该脚本用户查询虚拟机86ivr的日志，ivr升级到3.4.3版本后86ivr日志为FSM.log
 #实时日志查询格式bash vm_query_86ivr_fsmlog.sh 号码
 #归档日志查询格式bash vm_query_86ivr_fsmlog.sh 号码 2024-01-04
-
+#归档日志时间格式yyyy-mm-dd
 
 # 获取变量1（号码）和变量2（时间）
 number="$1"
