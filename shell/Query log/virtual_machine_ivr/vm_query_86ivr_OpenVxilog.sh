@@ -3,6 +3,7 @@
 #该脚本用户查询虚拟机86ivr的业务OpenVxi.log日志
 #实时日志查询格式bash vm_query_86ivr_OpenVxilog.sh 号码
 #归档日志查询格式bash vm_query_86ivr_OpenVxilog.sh 号码 2024010415
+#时间格式为yyyymmddhh或是yyyymmdd
 
 
 # 获取变量1（号码）和变量2（时间）
