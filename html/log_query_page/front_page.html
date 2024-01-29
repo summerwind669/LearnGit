@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shell Script Executor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+
+    label {
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+
+    select, input {
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <label for="options">Select an option:</label>
+  <select id="options">
+    <option value="rqivr">rqivr</option>
+    <option value="whivr">whivr</option>
+    <option value="bicc">bicc</option>
+    <option value="sbc">sbc</option>
+  </select>
+
+  <label for="keyword">Enter a keyword:</label>
+  <input type="text" id="keyword">
+
+  <button onclick="executeScript()">Execute Script</button>
+
+  <script>
+    function executeScript() {
+      var selectedOption = document.getElementById("options").value;
+      var keyword = document.getElementById("keyword").value;
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/execute-script", true);
+      xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          alert(xhr.responseText);
+        } else if (xhr.readyState == 4) {
+          alert("Error executing script.");
+        }
+      };
+
+      var requestBody = JSON.stringify({ option: selectedOption, keyword: keyword });
+      xhr.send(requestBody);
+    }
+  </script>
+
+</body>
+</html>
