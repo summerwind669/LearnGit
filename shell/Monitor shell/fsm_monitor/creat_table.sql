@@ -1,0 +1,27 @@
+-- 创建数据库
+CREATE DATABASE IF NOT EXISTS fsm_data DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- 切换到新创建的数据库
+USE fsm_data;
+
+-- 创建1分钟采集一次数据的表
+CREATE TABLE IF NOT EXISTS fsm_session_data_1min (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    hostname VARCHAR(255) NOT NULL COMMENT '主机名',
+    host_ip VARCHAR(255) NOT NULL COMMENT '主机IP',
+    current_session INT NOT NULL COMMENT '当前会话数',
+    insert_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
+    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    remark TEXT COMMENT '备注'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='1分钟采集一次的并发量数据';
+
+-- 创建5分钟采集一次数据的表
+CREATE TABLE IF NOT EXISTS fsm_session_data_5min (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    hostname VARCHAR(255) NOT NULL COMMENT '主机名',
+    host_ip VARCHAR(255) NOT NULL COMMENT '主机IP',
+    current_session INT NOT NULL COMMENT '当前会话数',
+    insert_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '插入时间',
+    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    remark TEXT COMMENT '备注'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='5分钟采集一次的并发量数据';

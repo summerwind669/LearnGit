@@ -1,0 +1,27 @@
+计算今天每个小时，每个host_ip节点的current_session平均值
+
+
+SELECT 
+    DATE_FORMAT(insert_time, '%Y-%m-%d %H:00:00') AS hour,
+    host_ip,
+    AVG(current_session) AS avg_current_session
+FROM 
+    fsm_session_data_5min
+WHERE 
+    DATE(insert_time) = CURDATE()
+GROUP BY 
+    hour, host_ip;
+
+
+
+计算今天每个小时，current_session平均值
+SELECT 
+    DATE_FORMAT(insert_time, '%Y-%m-%d %H:00:00') AS hour,
+    AVG(current_session) AS avg_current_session
+FROM 
+    fsm_session_data_5min
+WHERE 
+    DATE(insert_time) = CURDATE()
+GROUP BY 
+    hour;
+	
