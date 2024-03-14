@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# 数据库连接信息
+db_host="10.119.62.10"
+db_name="fsm_data"
+db_user="txy_monitor_fsm"
+db_password="txy_monitor_fsm"
+
+# 获取当前时间
+CURRENT_DATE=$(date +"%Y-%m-%d")
+CURRENT_HOUR=$(date +"%H")
+
+# 查询每小时每个媒体节点的current_session平均值
+QUERY="SELECT host_ip, province, data_center, AVG(current_session) AS avg_current_session FROM fsm_session_data_5min WHERE DATE(insert_time) = '$CURRENT_DATE' AND HOUR(insert_time) = '$CURRENT_HOUR' GROUP BY host_ip"
+RESULT=$(mysql -h "$db_host" -u "$db_user" -p"$db_password" -D "$db_name" -s -N -e "$QUERY")
+
+# 计算该小时全部媒体节点平均值
+TOTAL_AVG_QUERY="SELECT AVG(current_session) FROM fsm_session_data_5min WHERE DATE(insert_time) = '$CURRENT_DATE' AND HOUR(insert_time) = '$CURRENT_HOUR'"
+TOTAL_AVG=$(mysql -h "$db_host" -u "$db_user" -p"$db_password" -D "$db_name" -s -N -e "$TOTAL_AVG_QUERY")
+
+# 发出告警
+while read -r line; do
+    host_ip=$(echo "$line" | awk '{ print $1 }')
+    province=$(echo "$line" | awk '{ print $2 }')
+    data_center=$(echo "$line" | awk '{ print $3 }')
+    avg_current_session=$(echo "$line" | awk '{ print $4 }')
+    threshold=$(echo "scale=2; $TOTAL_AVG * 0.9" | bc)
+    
+    if (( $(echo "$avg_current_session < $threshold" | bc -l) )); then
+        echo "Province: $province, Data Center: $data_center, Host IP: $host_ip - Warning: Average current session ($avg_current_session) lower than 90% of total average ($TOTAL_AVG) for hour $CURRENT_HOUR"
+        # 这里可以添加发送告警的逻辑，比如通过邮件、短信接口等方式
+    fi
+done <<< "$RESULT"

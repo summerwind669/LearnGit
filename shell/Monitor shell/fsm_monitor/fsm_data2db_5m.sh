@@ -20,11 +20,24 @@ db_name="fsm_data"
 db_user="txy_monitor_fsm"
 db_password="txy_monitor_fsm"
 
+# 设置省份和机房名称
+province=""
+data_center=""
+
+# 根据主机名设置省份和机房名称
+if [[ $hostname == *"hlj-jx"* ]]; then
+    province="黑龙江"
+    data_center="进乡机房"
+elif [[ $hostname == *"hlj-jb"* ]]; then
+    province="黑龙江"
+    data_center="江北机房"
+fi
+
 # 构建 SQL 插入语句
-insert_sql="INSERT INTO fsm_session_data_5min (hostname, host_ip, current_session) VALUES ('$hostname', '$host_ip', '$current_session')"
+insert_sql="INSERT INTO fsm_session_data_5min (hostname, host_ip, current_session, province, data_center) VALUES ('$hostname', '$host_ip', '$current_session', '$province', '$data_center')"
 
 # 执行 SQL 插入语句
 mysql -h "$db_host" -u "$db_user" -p"$db_password" "$db_name" -e "$insert_sql"
 
 # 输出要插入的数据内容
-echo "要插入的数据内容为：时间: $current_time 主机名: $hostname 主机IP地址: $host_ip 当前并发量: $current_session"
+echo "要插入的数据内容为：时间: $current_time 主机名: $hostname 主机IP地址: $host_ip 当前并发量: $current_session 省份: $province 机房名称: $data_center"
