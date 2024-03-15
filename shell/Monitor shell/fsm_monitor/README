@@ -1,27 +1,7 @@
 计算今天每个小时，每个host_ip节点的current_session平均值
 
-
-SELECT 
-    DATE_FORMAT(insert_time, '%Y-%m-%d %H:00:00') AS hour,
-    host_ip,
-    AVG(current_session) AS avg_current_session
-FROM 
-    fsm_session_data_5min
-WHERE 
-    DATE(insert_time) = CURDATE()
-GROUP BY 
-    hour, host_ip;
-
-
-
-计算今天每个小时，current_session平均值
-SELECT 
-    DATE_FORMAT(insert_time, '%Y-%m-%d %H:00:00') AS hour,
-    AVG(current_session) AS avg_current_session
-FROM 
-    fsm_session_data_5min
-WHERE 
-    DATE(insert_time) = CURDATE()
-GROUP BY 
-    hour;
-	
+fsm_data2db_5m.sh为媒体节点并发量入库脚本。
+creat_table.sql为建表语句。
+fsm_hourly_session_alert_v1.1.sh 为监控脚本。
+install_mysql_client.sh 为mysql客户端安装脚本。
+install_mysql_server.sh 为mysql服务端安装脚本。
