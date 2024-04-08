@@ -1,9 +1,11 @@
 #!/bin/bash
 
-#运行脚本需要安装ffmpeg,欧拉系统源上有个工具,centos源没有这个工具,使用yum安装即可
-#脚本用法：bash check_mp4.sh 目录路径，比如bash check_mp4.sh /data/ucp/tmp/06 查询6号当天的
-#如果无法安装,请直接把126跳板机上的绿色二进制文件拷贝到record的/usr/bin下，赋权755
-#126文件位置/home/ucp/founder/soft/video_preprocess/ffmepg/ffprobe
+#########################################################################################
+#运行脚本需要安装ffmpeg,欧拉系统源上有个工具,centos源没有这个工具,使用yum安装即可             #
+#脚本用法：bash check_mp4.sh 目录路径，比如bash check_mp4.sh /data/ucp/tmp/06 查询6号当天的 #
+#如果无法安装,请直接把126跳板机上的绿色二进制文件拷贝到record的/usr/bin下，赋权755            #
+#126文件位置/home/ucp/founder/soft/video_preprocess/ffmepg/ffprobe                       #
+##########################################################################################
 
 # 检查目录是否存在
 if [ ! -d "$1" ]; then
