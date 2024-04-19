@@ -5,6 +5,7 @@ db_host="10.119.62.10"
 db_name="fsm_data"
 db_user="txy_monitor_fsm"
 db_password="txy_monitor_fsm"
+mysql_client="/home/monitor/mysql_client/mysql"
 
 # 获取当前时间
 CURRENT_DATE=$(date +"%Y-%m-%d")
