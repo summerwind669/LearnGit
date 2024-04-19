@@ -34,7 +34,7 @@ elif [[ $hostname == *"hlj-jb"* ]]; then
 fi
 
 # 构建 SQL 插入语句
-insert_sql="INSERT INTO fsm_session_data_5min (hostname, host_ip, current_session, province, data_center) VALUES ('$hostname', '$host_ip', '$current_session', '$province', '$data_center')"
+insert_sql="INSERT INTO fsm_session_data_1min (hostname, host_ip, current_session, province, data_center) VALUES ('$hostname', '$host_ip', '$current_session', '$province', '$data_center')"
 
 # 执行 SQL 插入语句
 /home/monitor/mysql_client/mysql -h "$db_host" -u "$db_user" -p"$db_password" "$db_name" -e "$insert_sql"

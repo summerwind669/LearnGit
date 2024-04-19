@@ -11,11 +11,11 @@ CURRENT_DATE=$(date +"%Y-%m-%d")
 CURRENT_HOUR=$(date +"%H")
 
 # 查询每小时每个媒体节点的current_session平均值
-QUERY="SELECT province, data_center, host_ip, AVG(current_session) AS avg_current_session FROM fsm_session_data_5min WHERE DATE(insert_time) = '$CURRENT_DATE' AND HOUR(insert_time) = '$CURRENT_HOUR' GROUP BY province, data_center, host_ip"
+QUERY="SELECT province, data_center, host_ip, AVG(current_session) AS avg_current_session FROM fsm_session_data_1min WHERE DATE(insert_time) = '$CURRENT_DATE' AND HOUR(insert_time) = '$CURRENT_HOUR' GROUP BY province, data_center, host_ip"
 RESULT=$(mysql -h "$db_host" -u "$db_user" -p"$db_password" -D "$db_name" -s -N -e "$QUERY")
 
 # 计算该小时全部媒体节点平均值
-TOTAL_AVG_QUERY="SELECT AVG(current_session) FROM fsm_session_data_5min WHERE DATE(insert_time) = '$CURRENT_DATE' AND HOUR(insert_time) = '$CURRENT_HOUR'"
+TOTAL_AVG_QUERY="SELECT AVG(current_session) FROM fsm_session_data_1min WHERE DATE(insert_time) = '$CURRENT_DATE' AND HOUR(insert_time) = '$CURRENT_HOUR'"
 TOTAL_AVG=$(mysql -h "$db_host" -u "$db_user" -p"$db_password" -D "$db_name" -s -N -e "$TOTAL_AVG_QUERY")
 
 # 发出告警
