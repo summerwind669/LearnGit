@@ -1,0 +1,15 @@
+---
+- hosts: 5gisbc-signal:5gisbc-media
+  gather_facts: yes
+  tasks:
+    - name: Start tcpdump process for 5gisbc-signal
+      shell: "nohup tcpdump -s0 -B 409600 -i any -C 200 -W 50 -w '/tmp/{{ ansible_hostname }}_5gisbc-signal.pcap' > /dev/null 2>&1 &"
+      async: 60
+      poll: 0
+      become: yes
+
+    - name: Start tcpdump process for 5gisbc-media
+      shell: "nohup tcpdump -s0 -B 409600 -i any -C 200 -W 50 -w '/tmp/{{ ansible_hostname }}_5gisbc-media.pcap' > /dev/null 2>&1 &"
+      async: 60
+      poll: 0
+      become: yes

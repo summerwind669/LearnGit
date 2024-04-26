@@ -1,0 +1,27 @@
+---
+- hosts: 5gisbc-signal:5gisbc-media
+  gather_facts: yes
+  tasks:
+    - name: Stop and check tcpdump process for 5gisbc-signal
+      shell: |
+        pkill -f '/tmp/{{ ansible_hostname }}_5gisbc-signal.pcap'
+        pgrep -f '/tmp/{{ ansible_hostname }}_5gisbc-signal.pcap'
+      register: tcpdump_signal_process
+      ignore_errors: yes
+      become: yes
+
+    - name: Print status of tcpdump process for 5gisbc-signal
+      debug:
+        msg: "tcpdump process for 5gisbc-signal is {{ 'running' if tcpdump_signal_process.rc == 0 else 'not running' }}"
+
+    - name: Stop and check tcpdump process for 5gisbc-media
+      shell: |
+        pkill -f '/tmp/{{ ansible_hostname }}_5gisbc-media.pcap'
+        pgrep -f '/tmp/{{ ansible_hostname }}_5gisbc-media.pcap'
+      register: tcpdump_media_process
+      ignore_errors: yes
+      become: yes
+
+    - name: Print status of tcpdump process for 5gisbc-media
+      debug:
+        msg: "tcpdump process for 5gisbc-media is {{ 'running' if tcpdump_media_process.rc == 0 else 'not running' }}"
