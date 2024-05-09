@@ -31,11 +31,11 @@ if [ $now_timestamp -ge $alarm_starttime -a $now_timestamp -le $alarm_endtime ];
         data_center=$(echo "$line" | awk '{ print $2 }')
         host_ip=$(echo "$line" | awk '{ print $3 }')
         avg_current_session=$(echo "$line" | awk '{ print $4 }')
-        threshold=$(echo "scale=2; $TOTAL_AVG * 0.8" | bc)
+        threshold=$(echo "scale=2; $TOTAL_AVG * 0.7" | bc)
         current_minimum_node_session_percent=$(awk 'BEGIN{printf "%.1f\n",('$avg_current_session'/'$TOTAL_AVG')*100}')
 
         if (( $(echo "$avg_current_session < $threshold" | bc -l) )); then
-            echo "通信云$province$data_center, Host IP: $host_ip - 从 $CURRENT_HALF_HOUR 到 $CURRENT_HOUR 期间并发量平均值 ($avg_current_session) 小于全部节点平均值($TOTAL_AVG) 的80%，当前值(${current_minimum_node_session_percent}%)，请检查服务是否正常。|1|init"
+            echo "通信云$province$data_center, Host IP: $host_ip - 从 $CURRENT_HALF_HOUR 到 $CURRENT_HOUR 期间并发量平均值 ($avg_current_session) 小于全部节点平均值($TOTAL_AVG) 的70%，当前值(${current_minimum_node_session_percent}%)，请检查服务是否正常。|1|init"
             # 这里可以添加发送告警的逻辑，比如通过邮件、短信接口等方式
         fi
     done <<< "$RESULT"
