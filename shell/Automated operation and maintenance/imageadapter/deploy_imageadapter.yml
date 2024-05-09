@@ -1,0 +1,62 @@
+- name: 停止 imageadapter 服务
+  tasks:
+    - name: 检查 imageadapter 进程是否正在运行
+      shell: ps aux | grep imageadapter | grep -v grep
+      register: imageadapter_process
+      ignore_errors: true
+    - name: 如果运行中，停止 imageadapter 进程
+      shell: kill {{ imageadapter_process.stdout.split()[1] }}
+      when: imageadapter_process.stdout != ""
+    - name: 等待 imageadapter 进程停止
+      async: 30
+      poll: 0
+      #become: yes
+      #become_user: root
+      shell: wait {{ imageadapter_process.stdout.split()[1] }}
+      when: imageadapter_process.stdout != ""
+
+- name: 移动当前版本至备份目录
+  tasks:
+    - name: 将 imageadapter 目录移动至备份目录
+      command: mv /home/ucp/imageadapter/tomcat1/webapps/imageadapter /home/ucp/app-share/bak/imageadapter_bak{{ ansible_date_time.date }}
+      args:
+        creates: /home/ucp/app-share/bak/imageadapter_bak{{ ansible_date_time.date }}
+
+- name: 确保imageadapter目录存在
+  tasks:
+    - name: 如果不存在，创建 imageadapter 目录
+      file:
+        path: /home/ucp/imageadapter/tomcat1/webapps/imageadapter
+        state: directory
+
+- name: 上传新的imageadapter WAR 文件
+  tasks:
+    - name: 将 imageadapter.war 复制到服务器
+      copy:
+        src: /tmp/imageadapter.war
+        dest: /home/ucp/imageadapter/tomcat1/webapps/imageadapter/imageadapter.war
+
+- name: 解压imageadapter WAR 文件
+  tasks:
+    - name: 解压 imageadapter.war
+      command: unzip /home/ucp/imageadapter/tomcat1/webapps/imageadapter/imageadapter.war
+      args:
+        chdir: /home/ucp/imageadapter/tomcat1/webapps/imageadapter/
+
+- name: 复制原始配置文件
+  tasks:
+    - name: 从备份中复制 system.properties 文件
+      command: cp /home/ucp/app-share/bak/imageadapter_bak{{ ansible_date_time.date }}/WEB-INF/classes/config/system.properties /home/ucp/imageadapter/tomcat1/webapps/imageadapter/WEB-INF/classes/config/system.properties
+
+- name: 启动 imageadapter 服务
+  tasks:
+    - name: 启动 imageadapter 服务
+      command: sh /home/ucp/imageadapter/tomcat1/startup.sh
+
+- name: 检查 imageadapter 服务是否运行
+  tasks:
+    - name: 检查 imageadapter 进程状态
+      shell: ps aux | grep imageadapter | grep -v grep
+      register: imageadapter_status
+      retries: 10
+      delay: 5
