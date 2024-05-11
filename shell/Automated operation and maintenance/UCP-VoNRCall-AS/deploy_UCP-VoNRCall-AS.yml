@@ -1,0 +1,26 @@
+---
+- name: 更新 UCP-VoNRCall-AS 服务
+  #hosts: your_server
+  #gather_facts: no
+  tasks:
+    - name: 停止 UCP-VoNRCall-AS 服务
+      shell: "cd /home/ucp/cms-back/UCP-VoNRCall-AS/bin && ./UCP-VoNRCall-AS.sh stop"
+
+    - name: 备份 UCP-VoNRCall-AS.jar 包
+      shell: "cd /home/ucp/cms-back/UCP-VoNRCall-AS/bin && cp UCP-VoNRCall-AS.jar UCP-VoNRCall-AS.jar.bak.`date +'%Y%m%d%H%M'`"
+      register: backup_result
+
+    - name: 上传 UCP-VoNRCall-AS.jar 包
+      copy:
+        src: /tmp/UCP-VoNRCall-AS.jar
+        dest: /home/ucp/cms-back/UCP-VoNRCall-AS/bin
+
+    - name: 启动 UCP-VoNRCall-AS 服务
+      shell: "cd /home/ucp/cms-back/UCP-VoNRCall-AS/bin && ./UCP-VoNRCall-AS.sh start"
+
+    - name: 检查 UCP-VoNRCall-AS 服务状态
+      shell: "ps -ef | grep UCP-VoNRCall-AS"
+      register: service_status
+
+    - debug:
+        msg: "{{ service_status.stdout_lines }}"
