@@ -1,26 +1,29 @@
 #!/bin/bash
 
-# »ñÈ¡µ±Ç°Ê±¼ä´Á
+# è·å–å½“å‰æ—¶é—´æˆ³
 current_time=$(date +"%m-%d %H:%M:%S")
 
-# ¼ÆËãÎå·ÖÖÓÇ°µÄÊ±¼ä´Á
-start_time=$(date -d "-5 minutes" +"%m-%d %H:%M:%S")
+# è®¡ç®—1åˆ†é’Ÿå‰çš„æ—¶é—´æˆ³
+#start_time=$(date -d "-1 minutes" +"%m-%d %H:%M:%S")
+start_time=$(date -d "1 minute ago" +"%m-%d %H:%M:%S")
 
-# »ñÈ¡ÈÕÖ¾ÎÄ¼şÂ·¾¶
+# å®šä¹‰ç»Ÿè®¡æ•°æ®çš„æ—¥å¿—æ–‡ä»¶è·¯å¾„
 log_file="/data/ucp/ipcc/logs/scc/LB/SimpleConn.log"
 
-# Ê¹ÓÃ grep ¹ıÂË³öÊ±¼ä·¶Î§ÄÚµÄÈÕÖ¾£¬²¢·Ö±ğÍ³¼Æ Evt_IContact ºÍ Cmd_IContact µÄ³öÏÖ´ÎÊı
-evt_count=$(grep -E "^\[$start_time.*$|^\[$current_time.*$" "$log_file" | grep -c "Evt_IContact")
-cmd_count=$(grep -E "^\[$start_time.*$|^\[$current_time.*$" "$log_file" | grep -c "Cmd_IContact")
+# è¿‡æ»¤å‡ºæ—¶é—´èŒƒå›´å†…çš„æ—¥å¿—ï¼Œå¹¶åˆ†åˆ«ç»Ÿè®¡ Evt_IContact å’Œ Cmd_IContact çš„å‡ºç°æ¬¡æ•°
+evt_count=$(awk -v start="$start_time" -v end="$current_time" '$0 ~ /^\[/{if ($0 >= "["start && $0 <= "["end) print}' $log_file | grep -c "Evt_IContact")
+cmd_count=$(awk -v start="$start_time" -v end="$current_time" '$0 ~ /^\[/{if ($0 >= "["start && $0 <= "["end) print}' $log_file | grep -c "Cmd_IContact")
 
-# »ñÈ¡µ±Ç°Ö÷»úµÄ IP µØÖ·
+# è·å–å½“å‰ä¸»æœºçš„ IP åœ°å€
 ip_address=$(hostname -i)
 
-# ÅĞ¶Ï IP µØÖ·Ç°×º²¢Êä³öÏàÓ¦µÄĞÅÏ¢
+# åˆ¤æ–­ IP åœ°å€å‰ç¼€åˆ¤æ–­ä¸­å¿ƒå¹¶è¾“å‡ºç›¸åº”çš„æµé‡æ•°æ®
 if [[ $ip_address == 192.* ]]; then
-    echo "ÂåÑôIM LBÎå·ÖÖÓÄÚÉÏĞĞÁ÷Á¿Îª£º$evt_count"
+    echo "é€šä¿¡äº‘æ´›é˜³åœ¨çº¿å®¢æœIM LBä¸€åˆ†é’Ÿå†…ä¸Šè¡Œæµé‡ä¸ºï¼š|$evt_count|int"
+    echo "é€šä¿¡äº‘æ´›é˜³åœ¨çº¿å®¢æœIM LBä¸€åˆ†é’Ÿå†…ä¸‹è¡Œæµé‡ä¸ºï¼š|$cmd_count|int"
 elif [[ $ip_address == 172.* ]]; then
-    echo "»´°²IM LBÎå·ÖÖÓÄÚÏÂĞĞÁ÷Á¿Îª£º$cmd_count"
+    echo "é€šä¿¡äº‘æ·®å®‰åœ¨çº¿å®¢æœIM LBä¸€åˆ†é’Ÿå†…ä¸Šè¡Œæµé‡ä¸ºï¼š|$evt_count|int"
+    echo "é€šä¿¡äº‘æ·®å®‰åœ¨çº¿å®¢æœIM LBä¸€åˆ†é’Ÿå†…ä¸‹è¡Œæµé‡ä¸ºï¼š|$cmd_count|int"
 else
-    echo "ÎŞ·¨Ê¶±ğ¸ÃÖ÷»úµÄIPµØÖ·£º$ip_address"
+    echo "æ— æ³•è¯†åˆ«è¯¥ä¸»æœºçš„IPåœ°å€ï¼š$ip_address"
 fi

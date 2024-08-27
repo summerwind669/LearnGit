@@ -1,26 +1,41 @@
 #!/bin/bash
 
-# »ñÈ¡µ±Ç°Ê±¼ä´Á
+# è·å–å½“å‰æ—¶é—´æˆ³
 current_time=$(date +"%m-%d %H:%M:%S")
 
-# ¼ÆËãÎå·ÖÖÓÇ°µÄÊ±¼ä´Á
-start_time=$(date -d "-5 minutes" +"%m-%d %H:%M:%S")
+# è®¡ç®—1åˆ†é’Ÿå‰çš„æ—¶é—´æˆ³
+#start_time=$(date -d "-1 minutes" +"%m-%d %H:%M:%S")
+start_time=$(date -d "1 minute ago" +"%m-%d %H:%M:%S")
 
-# »ñÈ¡ÈÕÖ¾ÎÄ¼şÂ·¾¶
-log_file="/data/ucp/ipcc/logs/scc/LB/LBUser.log"
+# å®šä¹‰ç»Ÿè®¡æ•°æ®çš„æ—¥å¿—æ–‡ä»¶è·¯å¾„å¹¶å±•å¼€é€šé…ç¬¦
+log_file_pattern="/data/ucp/ipcc/logs/scc/LB/LBUser*.log"
+log_files=$(ls $log_file_pattern 2>/dev/null)
 
-# Ê¹ÓÃ grep ºÍ awk ¹ıÂË³öÊ±¼ä·¶Î§ÄÚµÄÈÕÖ¾£¬²¢·Ö±ğÍ³¼Æ Evt_ICMU ºÍ Cmd_ICMU µÄ³öÏÖ´ÎÊı
-evt_count=$(grep -E "^\[$start_time.*$|^\[$current_time.*$" "$log_file" | grep -c "Evt_ICMU")
-cmd_count=$(grep -E "^\[$start_time.*$|^\[$current_time.*$" "$log_file" | grep -c "Cmd_ICMU")
+# å¦‚æœæ²¡æœ‰åŒ¹é…åˆ°æ–‡ä»¶ï¼Œè¾“å‡ºé”™è¯¯ä¿¡æ¯å¹¶é€€å‡º
+if [[ -z "$log_files" ]]; then
+    echo "Error: No log files found matching pattern $log_file_pattern"
+    exit 1
+fi
 
-# »ñÈ¡µ±Ç°Ö÷»úµÄ IP µØÖ·
+# æ£€æŸ¥æ–‡ä»¶è·¯å¾„
+echo "Matched log files:"
+echo "$log_files"
+echo "---------------------------------"
+
+# è¿‡æ»¤å‡ºæ—¶é—´èŒƒå›´å†…çš„æ—¥å¿—ï¼Œå¹¶åˆ†åˆ«ç»Ÿè®¡ Evt_ICMU å’Œ Cmd_ICMU çš„å‡ºç°æ¬¡æ•°
+evt_count=$(awk -v start="$start_time" -v end="$current_time" '$0 ~ /^\[/{if ($0 >= "["start && $0 <= "["end) print}' $log_files | grep -c "Evt_ICMU")
+cmd_count=$(awk -v start="$start_time" -v end="$current_time" '$0 ~ /^\[/{if ($0 >= "["start && $0 <= "["end) print}' $log_files | grep -c "Cmd_ICMU")
+
+# è·å–å½“å‰ä¸»æœºçš„ IP åœ°å€
 ip_address=$(hostname -i)
 
-# ÅĞ¶Ï IP µØÖ·Ç°×º²¢Êä³öÏàÓ¦µÄĞÅÏ¢
+# åˆ¤æ–­ IP åœ°å€å‰ç¼€åˆ¤æ–­ä¸­å¿ƒå¹¶è¾“å‡ºç›¸åº”çš„æµé‡æ•°æ®
 if [[ $ip_address == 192.* ]]; then
-    echo "ÂåÑôºôÈëLBÎå·ÖÖÓÄÚÉÏĞĞÁ÷Á¿Îª£º$evt_count"
+    echo "é€šä¿¡äº‘æ´›é˜³å‘¼å…¥LBä¸€åˆ†é’Ÿå†…ä¸Šè¡Œæµé‡ä¸ºï¼š|$evt_count|int"
+    echo "é€šä¿¡äº‘æ´›é˜³å‘¼å…¥LBä¸€åˆ†é’Ÿå†…ä¸‹è¡Œæµé‡ä¸ºï¼š|$cmd_count|int"
 elif [[ $ip_address == 172.* ]]; then
-    echo "»´°²ºôÈëLBÎå·ÖÖÓÄÚÏÂĞĞÁ÷Á¿Îª£º$cmd_count"
+    echo "é€šä¿¡äº‘æ·®å®‰å‘¼å…¥LBä¸€åˆ†é’Ÿå†…ä¸Šè¡Œæµé‡ä¸ºï¼š|$evt_count|int"
+    echo "é€šä¿¡äº‘æ·®å®‰å‘¼å…¥LBä¸€åˆ†é’Ÿå†…ä¸‹è¡Œæµé‡ä¸ºï¼š|$cmd_count|int"
 else
-    echo "ÎŞ·¨Ê¶±ğ¸ÃÖ÷»úµÄIPµØÖ·£º$ip_address"
+    echo "æ— æ³•è¯†åˆ«è¯¥ä¸»æœºçš„IPåœ°å€ï¼š$ip_address"
 fi
