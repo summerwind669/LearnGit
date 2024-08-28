@@ -17,11 +17,6 @@ if [[ -z "$log_files" ]]; then
     exit 1
 fi
 
-# 检查文件路径
-echo "Matched log files:"
-echo "$log_files"
-echo "---------------------------------"
-
 # 过滤出时间范围内的日志，并分别统计 Evt_ICMU 和 Cmd_ICMU 的出现次数
 evt_count=$(awk -v start="$start_time" -v end="$current_time" '$0 ~ /^\[/{if ($0 >= "["start && $0 <= "["end) print}' $log_files | grep -c "Evt_ICMU")
 cmd_count=$(awk -v start="$start_time" -v end="$current_time" '$0 ~ /^\[/{if ($0 >= "["start && $0 <= "["end) print}' $log_files | grep -c "Cmd_ICMU")
